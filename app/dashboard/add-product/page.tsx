@@ -1,7 +1,7 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import React from "react";
-import FormAddProduct from "./form-add-product/form-add-product";
+import FormAddProduct from "./components/form-add-product";
+import { authOptions } from "@/src/utils/authOptions";
 
 type Props = {};
 

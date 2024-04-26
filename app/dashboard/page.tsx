@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
 import React from "react";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import BasicNavbar from "../components/navbar";
 import TableProduct from "./components/table-product";
 import prisma from "@/prisma";
+import { authOptions } from "@/src/utils/authOptions";
+import BasicNavbar from "@/src/components/navbar";
 
 export const dynamic = "force-dynamic";
 

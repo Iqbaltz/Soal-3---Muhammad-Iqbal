@@ -1,15 +1,19 @@
 "use client";
 import { RequestCreateProduct } from "@/src/entities/product-entity";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, image, Input } from "@nextui-org/react";
+import { Button, image, Input, Select, SelectItem } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type Props = {};
+const categories = [
+  { value: "Kategori 1", label: "Kategori 1" },
+  { value: "Kategori 2", label: "Kategori 2" },
+  { value: "Kategori 3", label: "Kategori 3" },
+];
 
-export default function FormAddProduct({}: Props) {
+export default function FormAddProduct() {
   const {
     register,
     handleSubmit,
@@ -78,15 +82,20 @@ export default function FormAddProduct({}: Props) {
           errorMessage={errors.name?.message}
         />
 
-        <Input
+        <Select
           {...register("category")}
+          items={categories}
           label="Kategori"
           labelPlacement="outside"
           placeholder=" "
           isRequired
           isInvalid={!!errors.category}
           errorMessage={errors.category?.message}
-        />
+        >
+          {(category) => (
+            <SelectItem key={category.value}>{category.label}</SelectItem>
+          )}
+        </Select>
 
         <Input
           {...register("stock", { setValueAs: (value) => Number(value) })}

@@ -62,9 +62,12 @@ export default function TableProduct({ products }: Props) {
           return (
             <div className="relative flex items-center gap-2">
               <Tooltip content="Edit Product">
-                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <Link
+                  href={`/dashboard/edit-product/${product.id}`}
+                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                >
                   <BiEdit />
-                </span>
+                </Link>
               </Tooltip>
               <Tooltip color="danger" content="Delete Product">
                 <span

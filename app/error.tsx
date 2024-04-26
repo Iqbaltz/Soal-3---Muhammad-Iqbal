@@ -1,5 +1,7 @@
 "use client";
 
+import { redirect } from "next/navigation";
+
 export default function GlobalError({
   error,
   reset,
@@ -7,6 +9,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  if (error.message.includes("Unauthorized")) {
+    redirect("/login");
+  }
+
   return (
     <html>
       <body>
