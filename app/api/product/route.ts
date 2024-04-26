@@ -2,6 +2,7 @@ import { RequestCreateProduct } from "@/src/entities/product-entity";
 import { z } from "zod";
 import fs from "fs";
 import prisma from "@/prisma";
+import { NextRequest } from "next/server";
 
 function generateRandomName() {
   const randomString = Math.random().toString(36).substring(7);

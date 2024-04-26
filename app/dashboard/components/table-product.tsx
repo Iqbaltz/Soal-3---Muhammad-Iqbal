@@ -15,6 +15,7 @@ import { BiEdit, BiPlus, BiTrash } from "react-icons/bi";
 import Link from "next/link";
 import type { Product } from "@prisma/client";
 import prisma from "@/prisma";
+import { useRouter } from "next/navigation";
 
 const columns = [
   { name: "Gambar", uid: "image" },
@@ -31,15 +32,15 @@ type Props = {
 };
 
 export default function TableProduct({ products }: Props) {
+  const router = useRouter();
   const handleRemoveProduct = async (id: number) => {
-    alert(`Are you sure you want to delete this product ${id}?`);
     try {
-      await prisma.product.delete({
-        where: {
-          id,
-        },
+      const res = await fetch(`/api/product/${id}`, {
+        method: "DELETE",
       });
-      alert("Product removed");
+      if (res.ok) {
+        router.refresh();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -52,6 +53,11 @@ export default function TableProduct({ products }: Props) {
       switch (columnKey) {
         case "image":
           return <Avatar src={product.image} radius="none" />;
+        case "price":
+          return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(cellValue);
         case "actions":
           return (
             <div className="relative flex items-center gap-2">
