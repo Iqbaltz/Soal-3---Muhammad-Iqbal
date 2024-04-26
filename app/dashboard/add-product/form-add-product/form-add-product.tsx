@@ -1,7 +1,8 @@
 "use client";
 import { RequestCreateProduct } from "@/src/entities/product-entity";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import { Button, image, Input } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,11 +19,27 @@ export default function FormAddProduct({}: Props) {
     resolver: zodResolver(RequestCreateProduct),
   });
 
-  const onSubmit = (data: z.infer<typeof RequestCreateProduct>) => {
-    console.log(data);
-  };
+  const router = useRouter();
 
-  console.log("errors", errors);
+  const onSubmit = async (data: z.infer<typeof RequestCreateProduct>) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64 = e.target?.result;
+      const payload = JSON.stringify({ ...data, image: base64 });
+      const response = await fetch("/api/product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: payload,
+      });
+
+      if (response.ok) {
+        router.push("/dashboard");
+      }
+    };
+    reader.readAsDataURL(data.image);
+  };
 
   return (
     <div>

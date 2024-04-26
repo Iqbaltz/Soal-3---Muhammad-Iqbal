@@ -10,11 +10,6 @@ function generateRandomName() {
 
 export async function POST(req: Request) {
   const data: z.infer<typeof RequestCreateProduct> = await req.json();
-
-  // data.image is base64 encoded image
-  // save it to public folder
-  // and get the path
-
   // Base64 string
   const base64String = data.image;
 
@@ -34,9 +29,9 @@ export async function POST(req: Request) {
   // Write the buffer to the file
   await fs.writeFileSync(filePath, buffer);
 
-  await prisma.product.create({
+  const product = await prisma.product.create({
     data: {
-      image: filePath,
+      image: filePath.replace("public/", ""),
       code: data.code,
       name: data.name,
       category: data.category,
@@ -44,4 +39,10 @@ export async function POST(req: Request) {
       price: data.price,
     },
   });
+
+  return Response.json(
+    JSON.stringify(product, (_, v) =>
+      typeof v === "bigint" ? v.toString() : v
+    )
+  );
 }

@@ -22,7 +22,7 @@ export default function BasicNavbar({ isLoggedIn = false }: Props) {
     <Navbar>
       <NavbarBrand>
         <Link href="/" className="font-bold text-inherit">
-          MINI COMMERCE
+          MINI INVENTORY
         </Link>
       </NavbarBrand>
       {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">

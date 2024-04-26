@@ -22,7 +22,7 @@ model Product {
   image     String
   category  String
   stock     Int
-  price     Int
+  price     BigInt
 }
 
 model User {

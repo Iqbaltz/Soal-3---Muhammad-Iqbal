@@ -13,6 +13,8 @@ import {
 } from "@nextui-org/react";
 import { BiEdit, BiPlus, BiTrash } from "react-icons/bi";
 import Link from "next/link";
+import type { Product } from "@prisma/client";
+import prisma from "@/prisma";
 
 const columns = [
   { name: "Gambar", uid: "image" },
@@ -24,64 +26,56 @@ const columns = [
   { name: "Aksi", uid: "actions" },
 ];
 
-const users = [
-  {
-    id: 1,
-    name: "Tony Reichert",
-    code: "CEO",
-    price: "20000",
-    category: "Kategori 1",
-    stock: "29",
-    image: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-  },
-  {
-    id: 2,
-    name: "Zoey Lang",
-    code: "Technical Lead",
-    price: "30000",
-    category: "Kategori 2",
-    stock: "25",
-    image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-  },
-  {
-    id: 3,
-    name: "Jane Fisher",
-    code: "Senior Developer",
-    price: "40000",
-    category: "Kategori 3",
-    stock: "22",
-    image: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-  },
-];
+type Props = {
+  products: Product[];
+};
 
-type Props = {};
-
-export default function TableProduct({}: Props) {
-  const renderCell = React.useCallback((product: any, columnKey: any) => {
-    const cellValue = product[columnKey];
-
-    switch (columnKey) {
-      case "image":
-        return <Avatar src={product.image} radius="none" />;
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Tooltip content="Edit Product">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <BiEdit />
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Delete Product">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <BiTrash />
-              </span>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
+export default function TableProduct({ products }: Props) {
+  const handleRemoveProduct = async (id: number) => {
+    alert(`Are you sure you want to delete this product ${id}?`);
+    try {
+      await prisma.product.delete({
+        where: {
+          id,
+        },
+      });
+      alert("Product removed");
+    } catch (error) {
+      console.error(error);
     }
-  }, []);
+  };
+
+  const renderCell = React.useCallback(
+    (product: Product, columnKey: keyof Product & "actions") => {
+      const cellValue = product[columnKey];
+
+      switch (columnKey) {
+        case "image":
+          return <Avatar src={product.image} radius="none" />;
+        case "actions":
+          return (
+            <div className="relative flex items-center gap-2">
+              <Tooltip content="Edit Product">
+                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <BiEdit />
+                </span>
+              </Tooltip>
+              <Tooltip color="danger" content="Delete Product">
+                <span
+                  onClick={() => handleRemoveProduct(product.id)}
+                  className="text-lg text-danger cursor-pointer active:opacity-50"
+                >
+                  <BiTrash />
+                </span>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    []
+  );
 
   return (
     <div>
@@ -105,11 +99,13 @@ export default function TableProduct({}: Props) {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
+        <TableBody items={products}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell>
+                  {renderCell(item, columnKey as keyof Product & "actions")}
+                </TableCell>
               )}
             </TableRow>
           )}
