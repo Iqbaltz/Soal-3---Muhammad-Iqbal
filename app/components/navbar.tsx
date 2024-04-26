@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   Navbar,
@@ -5,16 +6,24 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 
-type Props = {};
+type Props = {
+  isLoggedIn?: boolean;
+};
 
-export default function BasicNavbar({}: Props) {
+export default function BasicNavbar({ isLoggedIn = false }: Props) {
+  const handleSignout = async () => {
+    await signOut({ callbackUrl: "/login", redirect: true });
+  };
   return (
     <Navbar>
       <NavbarBrand>
-        <p className="font-bold text-inherit">MINI COMMERCE</p>
+        <Link href="/" className="font-bold text-inherit">
+          MINI COMMERCE
+        </Link>
       </NavbarBrand>
       {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
@@ -34,14 +43,24 @@ export default function BasicNavbar({}: Props) {
         </NavbarItem>
       </NavbarContent> */}
       <NavbarContent justify="end">
-        <NavbarItem>
-          <Link href="/login">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="/register" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+        {!isLoggedIn ? (
+          <>
+            <NavbarItem>
+              <Link href="/login">Login</Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button as={Link} color="primary" href="/register" variant="flat">
+                Sign Up
+              </Button>
+            </NavbarItem>
+          </>
+        ) : (
+          <NavbarItem>
+            <Button onClick={handleSignout} color="danger" variant="flat">
+              Logout
+            </Button>
+          </NavbarItem>
+        )}
       </NavbarContent>
     </Navbar>
   );

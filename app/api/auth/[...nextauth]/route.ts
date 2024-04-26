@@ -1,34 +1,67 @@
-import { authenticate } from "@/services/authService";
-import NextAuth from "next-auth";
-import type { AuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/prisma";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
-    CredentialsProvider({
+    Credentials({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: {},
+        password: {},
       },
       async authorize(credentials, req) {
-        if (typeof credentials !== "undefined") {
-          const res = await authenticate(
-            credentials.email,
-            credentials.password
-          );
-          if (typeof res !== "undefined") {
-            return { ...res.user, apiToken: res.token };
-          } else {
-            return null;
-          }
-        } else {
+        // const res = await fetch("/your/endpoint", {
+        //   method: "POST",
+        //   body: JSON.stringify(credentials),
+        //   headers: { "Content-Type": "application/json" },
+        // });
+        // const user = await res.json();
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
+
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        const isValid = bcrypt.compareSync(credentials.password, user.password);
+
+        if (isValid) {
+          // return { email: user.email, id: user.id };
+          return new Promise((resolve) => {
+            resolve({
+              email: user.email,
+              id: String(user.id),
+            });
+          });
+        }
+
+        // Return null if user data could not be retrieved
+        return null;
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  // callbacks: {
+  //   async jwt({ token, user }) {
+  //     if (user) return { ...token, ...user };
+
+  //     return token;
+  //   },
+
+  //   async session({ token, session }) {
+  //     console.log("session", session);
+  //     console.log("token", token);
+  //     return session;
+  //   },
+  // },
 };
 
 const handler = NextAuth(authOptions);

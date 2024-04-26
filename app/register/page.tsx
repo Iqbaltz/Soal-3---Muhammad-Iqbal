@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRegisterSchema } from "@/src/entities/user-entity";
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
@@ -18,8 +19,22 @@ export default function RegisterPage({}: Props) {
     resolver: zodResolver(UserRegisterSchema),
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
+  const { push } = useRouter();
+
+  const onSubmit = handleSubmit(async (data) => {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      push("/login");
+    } else {
+      alert("Register failed");
+    }
   });
 
   return (

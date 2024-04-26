@@ -5,10 +5,9 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  phone_number: number;
+  phone_number: string;
   created_at: Date;
   updated_at: Date;
-  deleted_at: Date;
 }
 
 export let UserRegisterSchema = z

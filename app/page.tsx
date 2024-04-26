@@ -1,11 +1,14 @@
+import { getServerSession } from "next-auth";
 import BasicNavbar from "./components/navbar";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
   return (
     <>
-      <BasicNavbar />
+      <BasicNavbar isLoggedIn={!!session} />
       <main className="mx-4 lg:mx-20 mt-20">
-        <h1>GG</h1>
+        <h1>home</h1>
       </main>
     </>
   );
