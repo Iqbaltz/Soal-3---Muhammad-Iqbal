@@ -25,11 +25,9 @@ export default function BasicNavbar({ isLoggedIn = false }: Props) {
           MINI INVENTORY
         </Link>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="/dashboard">
-            Manage Inventory
-          </Link>
+      <NavbarContent className="sm:flex gap-4" justify="center">
+        <NavbarItem className="text-warning">
+          <Link href="/dashboard">Manage Inventory</Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
