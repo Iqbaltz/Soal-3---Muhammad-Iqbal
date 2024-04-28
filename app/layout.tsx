@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Mini Commerce App",
+  title: "Mini Inventory App",
   description: "Created by Muhammad Iqbal",
 };
 

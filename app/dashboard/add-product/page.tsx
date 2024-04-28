@@ -14,7 +14,7 @@ export default async function AddProductPage({}: Props) {
 
   return (
     <div className="w-[90%] mx-auto mt-8">
-      <h1>Add Product</h1>
+      <h1 className="font-bold text-xl">Add Product</h1>
       <FormAddProduct />
     </div>
   );

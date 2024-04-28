@@ -108,7 +108,7 @@ export default function TableProduct({ products }: Props) {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={products}>
+        <TableBody items={products} emptyContent={"No Data"}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (
